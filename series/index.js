@@ -1,5 +1,6 @@
 // A: importa o express e cria a aplicação (o servidor)
 const express = require('express')
+const axios = require('axios')  
 const app = express()
 
 // B: middleware que transforma o corpo JSON da requisição em objeto (req.body)
@@ -15,8 +16,7 @@ app.get('/series', (req, res) => {
 })
 
 // F: endpoint POST /series, que cadastra uma série
-app.post('/series', (req, res) => {
-  // Parte 1: lê o corpo
+app.post('/series', async (req, res) => {          
   const { titulo, plataforma } = req.body || {}
 
   // Parte 2: valida (se faltar algum campo, responde 400 e para aqui)
@@ -24,7 +24,7 @@ app.post('/series', (req, res) => {
     return res.status(400).json({ erro: 'titulo e plataforma são obrigatórios' })
   }
 
-  // Parte 3: monta, guarda, incrementa o id e responde 201
+  // Parte 3: monta, guarda e incrementa o id
   const serie = {
     id: id,
     titulo: titulo,
@@ -32,7 +32,21 @@ app.post('/series', (req, res) => {
   }
   series[id] = serie
   id++
+
+  // Parte 4: avisa o barramento que uma série foi criada    
+  await axios.post('http://localhost:10000/eventos', {
+    tipo: 'SerieCriada',
+    dados: serie
+  })
+
   res.status(201).json(serie)
+})
+
+// G: POST /eventos, que recebe os eventos repassados pelo barramento
+app.post('/eventos', (req, res) => {
+  const evento = req.body
+  console.log(evento.tipo)
+  res.end()
 })
 
 // E: coloca o servidor no ar na porta 4000
