@@ -1,3 +1,5 @@
+const HOST = 'localhost'
+
 // A: importa o express e o axios, e cria a aplicação
 const express = require('express')
 const axios = require('axios')
@@ -62,7 +64,7 @@ const port = 4200
 app.listen(port, async () => {
   console.log(`Consulta. Porta ${port}.`)
   try {
-    const resp = await axios.get('http://localhost:10000/eventos')
+    const resp = await axios.get(`http://${HOST}:10000/eventos`)
     resp.data.forEach((evento) => {
       try {
         funcoes[evento.tipo](evento.dados)

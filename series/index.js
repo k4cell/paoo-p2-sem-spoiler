@@ -1,3 +1,5 @@
+const HOST = 'localhost'
+
 // A: importa o express e cria a aplicação (o servidor)
 const express = require('express')
 const axios = require('axios')  
@@ -34,7 +36,7 @@ app.post('/series', async (req, res) => {
   id++
 
   // Parte 4: avisa o barramento que uma série foi criada    
-  await axios.post('http://localhost:10000/eventos', {
+  await axios.post(`http://${HOST}:10000/eventos`, {
     tipo: 'SerieCriada',
     dados: serie
   })

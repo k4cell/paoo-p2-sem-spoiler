@@ -1,3 +1,5 @@
+const HOST = 'localhost'
+
 // A: importa express e axios, e cria a aplicação
 const express = require('express')
 const axios = require('axios')
@@ -16,7 +18,7 @@ const funcoes = {
       // diferencia maiúsculas de minúsculas: compara o texto como foi escrito
       const temSpoiler = palavrasProibidas.some(palavra => comentario.texto.includes(palavra))
       const status = temSpoiler ? 'spoiler' : 'liberado'
-      await axios.post('http://localhost:10000/eventos', {
+      await axios.post(`http://${HOST}:10000/eventos`, {
         tipo: 'ComentarioModerado',
         dados: {
           id: comentario.id,
@@ -46,7 +48,7 @@ const port = 4300
 app.listen(port, async () => {
   console.log(`Moderação. Porta ${port}.`)
   try {
-    const resp = await axios.get('http://localhost:10000/eventos')
+    const resp = await axios.get(`http://${HOST}:10000/eventos`)
 
     // 1ª passagem: guarda o último evento de cada comentário
     const ultimoEvento = {}

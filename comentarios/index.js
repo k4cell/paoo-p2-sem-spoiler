@@ -1,3 +1,5 @@
+const HOST = 'localhost'
+
 // A: importa o express e a função v4 do uuid, e cria a aplicação
 const express = require('express')
 const axios = require('axios')       
@@ -25,7 +27,7 @@ app.post('/series/:id/comentarios', async (req, res) => {
   comentariosPorSerieId[req.params.id] = comentariosDaSerie
 
   // avisa o barramento que um comentário foi criado   
-  await axios.post('http://localhost:10000/eventos', {
+  await axios.post(`http://${HOST}:10000/eventos`, {
     tipo: 'ComentarioCriado',
     dados: comentario
   })
@@ -72,7 +74,7 @@ const funcoes = {
     comentario.status = comentarioModerado.status
     // avisa o restante do sistema com o evento genérico
     try {
-      await axios.post('http://localhost:10000/eventos', {
+      await axios.post(`http://${HOST}:10000/eventos`, {
         tipo: 'ComentarioAtualizado',
         dados: {
           id: comentario.id,
