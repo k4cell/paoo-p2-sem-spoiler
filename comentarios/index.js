@@ -1,4 +1,4 @@
-const HOST = 'localhost'
+const HOST = '192.168.15.87'
 
 // A: importa o express e a função v4 do uuid, e cria a aplicação
 const express = require('express')

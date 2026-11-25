@@ -1,4 +1,4 @@
-const HOST = 'localhost'
+const HOST = '192.168.15.87'
 
 // A: importa o express e cria a aplicação (o servidor)
 const express = require('express')
