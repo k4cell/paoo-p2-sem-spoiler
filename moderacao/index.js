@@ -11,13 +11,11 @@ const palavrasProibidas = ['morre', 'final', 'assassino', 'traidor']
 
 // D: mapa de funções: para cada tipo de evento, o que fazer com os dados
 const funcoes = {
-  ComentarioCriado: async (comentario) => {
-    // diferencia maiúsculas de minúsculas: compara o texto como foi escrito
-    const temSpoiler = palavrasProibidas.some(palavra => comentario.texto.includes(palavra))
-    const status = temSpoiler ? 'spoiler' : 'liberado'
+   ComentarioCriado: async (comentario) => {
     try {
       // diferencia maiúsculas de minúsculas: compara o texto como foi escrito
       const temSpoiler = palavrasProibidas.some(palavra => comentario.texto.includes(palavra))
+      const status = temSpoiler ? 'spoiler' : 'liberado'
       await axios.post('http://localhost:10000/eventos', {
         tipo: 'ComentarioModerado',
         dados: {
