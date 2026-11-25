@@ -1,5 +1,6 @@
-// A: importa o express e cria a aplicação
+// A: importa o express e o axios, e cria a aplicação
 const express = require('express')
+const axios = require('axios')
 const app = express()
 
 // B: middleware que lê o corpo JSON
@@ -56,6 +57,18 @@ app.post('/eventos', (req, res) => {
   res.end()
 })
 
-// G: coloca o servidor no ar na porta 4200
+// G: coloca o servidor no ar e recupera os eventos que perdeu
 const port = 4200
-app.listen(port, () => console.log(`Consulta. Porta ${port}.`))
+app.listen(port, async () => {
+  console.log(`Consulta. Porta ${port}.`)
+  try {
+    const resp = await axios.get('http://localhost:10000/eventos')
+    resp.data.forEach((evento) => {
+      try {
+        funcoes[evento.tipo](evento.dados)
+      } catch (e) {}
+    })
+  } catch (e) {
+    console.log('Barramento indisponível')
+  }
+})

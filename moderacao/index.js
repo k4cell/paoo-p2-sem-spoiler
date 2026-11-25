@@ -43,6 +43,31 @@ app.post('/eventos', (req, res) => {
   res.end()
 })
 
-// F: coloca o servidor no ar na porta 4300
+// F: coloca o servidor no ar e modera os comentários que ficaram para trás
 const port = 4300
-app.listen(port, () => console.log(`Moderação. Porta ${port}.`))
+app.listen(port, async () => {
+  console.log(`Moderação. Porta ${port}.`)
+  try {
+    const resp = await axios.get('http://localhost:10000/eventos')
+
+    // 1ª passagem: guarda o último evento de cada comentário
+    const ultimoEvento = {}
+    resp.data.forEach((evento) => {
+      if (evento.tipo === 'ComentarioCriado' || evento.tipo === 'ComentarioEditado' || evento.tipo === 'ComentarioModerado') {
+        ultimoEvento[evento.dados.id] = evento
+      }
+    })
+
+    // 2ª passagem: modera só os comentários cujo último evento não é ComentarioModerado
+    resp.data.forEach((evento) => {
+      try {
+        const ehOUltimo = ultimoEvento[evento.dados.id] === evento
+        if (ehOUltimo && evento.tipo !== 'ComentarioModerado') {
+          funcoes[evento.tipo](evento.dados)
+        }
+      } catch (e) {}
+    })
+  } catch (e) {
+    console.log('Barramento indisponível')
+  }
+})
