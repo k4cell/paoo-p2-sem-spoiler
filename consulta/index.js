@@ -30,6 +30,9 @@ const funcoes = {
   }
 }
 
+// edição também troca o comentário inteiro
+funcoes.ComentarioEditado = funcoes.ComentarioAtualizado
+
 // E: GET /series, que devolve a base inteira
 app.get('/series', (req, res) => {
   res.json(baseConsulta)

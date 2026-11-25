@@ -29,6 +29,9 @@ const funcoes = {
   }
 }
 
+// comentário editado é moderado do mesmo jeito que um comentário novo
+funcoes.ComentarioEditado = funcoes.ComentarioCriado
+
 // E: POST /eventos, que executa a função do tipo do evento (ou ignora)
 app.post('/eventos', (req, res) => {
   try {

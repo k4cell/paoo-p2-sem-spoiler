@@ -38,6 +38,29 @@ app.get('/series/:id/comentarios', (req, res) => {
   res.json(comentariosPorSerieId[req.params.id] || [])
 })
 
+// I: PUT /series/:id/comentarios/:idComentario, que edita o texto de um comentário
+app.put('/series/:id/comentarios/:idComentario', async (req, res) => {
+  const { texto } = req.body || {}
+  const comentariosDaSerie = comentariosPorSerieId[req.params.id] || []
+  const comentario = comentariosDaSerie.find(c => c.id === req.params.idComentario)
+
+  if (!comentario) {
+    return res.status(404).json({ erro: 'comentário não encontrado' })
+  }
+
+  // troca o texto e volta para a fila de moderação
+  comentario.texto = texto
+  comentario.status = 'pendente'
+
+  // avisa o barramento que o comentário foi editado
+  await axios.post('http://localhost:10000/eventos', {
+    tipo: 'ComentarioEditado',
+    dados: comentario
+  })
+
+  res.status(200).json(comentario)
+})
+
 // H: mapa de funções: para cada tipo de evento, o que fazer com os dados
 const funcoes = {
   ComentarioModerado: async (comentarioModerado) => {
