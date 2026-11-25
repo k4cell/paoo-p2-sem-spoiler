@@ -55,7 +55,7 @@ app.put('/series/:id/comentarios/:idComentario', async (req, res) => {
   comentario.status = 'pendente'
 
   // avisa o barramento que o comentário foi editado
-  await axios.post('http://localhost:10000/eventos', {
+    await axios.post(`http://${HOST}:10000/eventos`, {
     tipo: 'ComentarioEditado',
     dados: comentario
   })
