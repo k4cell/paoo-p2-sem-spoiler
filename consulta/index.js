@@ -1,0 +1,52 @@
+// A: importa o express e cria a aplicação
+const express = require('express')
+const app = express()
+
+// B: middleware que lê o corpo JSON
+app.use(express.json())
+
+// C: base da consulta: cada série com os seus comentários juntos
+const baseConsulta = {}
+
+// D: mapa de funções: para cada tipo de evento, o que fazer com os dados
+const funcoes = {
+  SerieCriada: (serie) => {
+    baseConsulta[serie.id] = {
+      id: serie.id,
+      titulo: serie.titulo,
+      plataforma: serie.plataforma,
+      comentarios: []
+    }
+  },
+  ComentarioCriado: (comentario) => {
+    const serie = baseConsulta[comentario.serieId]
+    serie.comentarios.push(comentario)
+  }
+}
+
+// E: GET /series, que devolve a base inteira
+app.get('/series', (req, res) => {
+  res.json(baseConsulta)
+})
+
+// H: GET /series/:id, que devolve uma série com os seus comentários (ou 404)
+app.get('/series/:id', (req, res) => {
+  const serie = baseConsulta[req.params.id]
+  if (!serie) {
+    return res.status(404).json({ erro: 'série não encontrada' })
+  }
+  res.json(serie)
+})
+
+// F: POST /eventos, que executa a função do tipo do evento (ou ignora)
+app.post('/eventos', (req, res) => {
+  try {
+    const evento = req.body
+    funcoes[evento.tipo](evento.dados)
+  } catch (e) {}
+  res.end()
+})
+
+// G: coloca o servidor no ar na porta 4200
+const port = 4200
+app.listen(port, () => console.log(`Consulta. Porta ${port}.`))
