@@ -16,6 +16,8 @@ const funcoes = {
     const temSpoiler = palavrasProibidas.some(palavra => comentario.texto.includes(palavra))
     const status = temSpoiler ? 'spoiler' : 'liberado'
     try {
+      // diferencia maiúsculas de minúsculas: compara o texto como foi escrito
+      const temSpoiler = palavrasProibidas.some(palavra => comentario.texto.includes(palavra))
       await axios.post('http://localhost:10000/eventos', {
         tipo: 'ComentarioModerado',
         dados: {
