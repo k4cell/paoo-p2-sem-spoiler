@@ -21,6 +21,12 @@ const funcoes = {
   ComentarioCriado: (comentario) => {
     const serie = baseConsulta[comentario.serieId]
     serie.comentarios.push(comentario)
+  },
+  ComentarioAtualizado: (comentario) => {
+    // troca o comentário inteiro, sem examinar o que mudou
+    const comentarios = baseConsulta[comentario.serieId].comentarios
+    const indice = comentarios.findIndex(c => c.id === comentario.id)
+    comentarios[indice] = comentario
   }
 }
 
